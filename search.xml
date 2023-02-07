@@ -4,26 +4,257 @@
   
     
     <entry>
-      <title>test1</title>
-      <link href="/2023/01/29/test1/"/>
-      <url>/2023/01/29/test1/</url>
+      <title>linux硬盘挂载</title>
+      <link href="/2023/06/17/linux-ying-pan-gua-zai/"/>
+      <url>/2023/06/17/linux-ying-pan-gua-zai/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<p>fdisk<br>df -h</p><p>mkdir 挂载点</p><p>以新建挂载点“&#x2F;mnt&#x2F;sdc”为例：</p><p>mkdir &#x2F;mnt&#x2F;sdc</p><p>12、执行以下命令，将新建分区挂载到步骤11中新建的挂载点下。 </p><p>mount &#x2F;dev&#x2F;xvdb1 挂载点</p><p>以挂载新建分区至“&#x2F;mnt&#x2F;sdc”为例：</p><p>mount &#x2F;dev&#x2F;xvdb1 &#x2F;mnt&#x2F;sdc</p><p>13、执行以下命令，查看挂载结果。</p><p>df -TH</p><p>回显类似如下信息：</p><p>[root@ecs-b656 test]# df -TH</p><p>Filesystem     Type      Size  Used Avail Use% Mounted on </p><p>&#x2F;dev&#x2F;xvda2     xfs        11G  7.4G  3.2G  71% &#x2F; </p><p>devtmpfs       devtmpfs  4.1G     0  4.1G   0% &#x2F;dev </p><p>tmpfs          tmpfs     4.1G   82k  4.1G   1% &#x2F;dev&#x2F;shm </p><p>tmpfs          tmpfs     4.1G  9.2M  4.1G   1% &#x2F;run </p><p>tmpfs          tmpfs     4.1G     0  4.1G   0% &#x2F;sys&#x2F;fs&#x2F;cgroup </p><p>&#x2F;dev&#x2F;xvda3     xfs       1.1G   39M  1.1G   4% &#x2F;home </p><p>&#x2F;dev&#x2F;xvda1     xfs       1.1G  131M  915M  13% &#x2F;boot </p><p>&#x2F;dev&#x2F;xvdb1     ext4       11G   38M  9.9G   1% &#x2F;mnt&#x2F;sdc</p><p>表示新建分区“&#x2F;dev&#x2F;xvdb1”已挂载至“&#x2F;mnt&#x2F;sdc”。</p><p>设置开机自动挂载磁盘</p><p>如果您需要在云主机系统启动时自动挂载磁盘，不能采用在 &#x2F;etc&#x2F;fstab直接指定 &#x2F;dev&#x2F;xvdb1的方法，因为云中设备的顺序编码在关闭或者开启云主机过程中可能发生改变，例如&#x2F;dev&#x2F;xvdb1可能会变成&#x2F;dev&#x2F;xvdb2。推荐使用UUID来配置自动挂载数据盘。</p><p>说明：磁盘的UUID（universally unique identifier）是Linux系统为磁盘分区提供的唯一的标识字符串。</p><p>1、执行如下命令，查询磁盘UUID。 </p><p>blkid 磁盘分区</p><p>以查询磁盘分区“&#x2F;dev&#x2F;xvdb1”的UUID为例：</p><p>blkid &#x2F;dev&#x2F;xvde1 </p><p>屏幕回显如下： </p><p>[root@ecs-b656 test]# blkid &#x2F;dev&#x2F;xvdb1</p><p>&#x2F;dev&#x2F;xvdb1: UUID&#x3D;”1851e23f-1c57-40ab-86bb-5fc5fc606ffa” TYPE&#x3D;”ext4”</p><p>表示“&#x2F;dev&#x2F;xvdb1”的UUID。</p><p>2、执行以下命令，使用VI编辑器打开【fstab】文件。 </p><p>vi &#x2F;etc&#x2F;fstab </p><p>3、按【i】，进入编辑模式。</p><p>4、将光标移至文件末尾，按【Enter】，添加如下内容。</p><p>UUID&#x3D;1851e23f-1c57-40ab-86bb-5fc5fc606ffa &#x2F;mnt&#x2F;sdc      ext4 defaults     0   2</p><p>5、按【ESC】后，输入【:wq】，按【Enter】。 </p><p>6、保存设置并退出编辑器。</p><h2 id="ubuntu挂载硬盘的两种方式"><a href="#ubuntu挂载硬盘的两种方式" class="headerlink" title="ubuntu挂载硬盘的两种方式"></a>ubuntu挂载硬盘的两种方式</h2><p>首先要了解一下两个ubuntu中比较直观看到磁盘结构的命令</p><p>分别是 lsblk 和df -h</p><p>这两种区别在下图中</p><p>lsblk和df -h<br><strong>这里我们以新盘（或者旧数据不需要的盘）</strong>挂载在&#x2F;mnt&#x2F;data下作为例子</p><p>首先进mnt目录下新建data文件夹</p><p>cd &#x2F;mnt</p><p>mkdir data</p><p>然后假设我们需要挂载的新磁盘通过命令查看发现叫sdb，新买的硬盘一般没有初始化过</p><p>已经有分区表的硬盘比如上图中vda就会有下级目录vda1</p><p>而新磁盘是没有的，比如只有sdb没有sdb1，我们需要手动初始化</p><p>已经有分区的话后面会单独说，这里讲新硬盘或者说是旧数据都不要的盘</p><p>首先</p><p>parted &#x2F;dev&#x2F;sdb (sdb是需要挂载的磁盘)</p><p>然后跟着下列命令一直敲就完事了</p><p>mklabel gpt（创建gpt分区表）</p><p>mkpart primary 1 -1</p><p>p（输出结果）</p><p>q（离开菜单）</p><p>mkfs.ext4 &#x2F;dev&#x2F;sdb1（格式化成ext4分区格式）</p><p>然后到这里我们的sdb1分区就已经创建好了</p><p>接下来我们就要把sdb1分区写到fstab里，这样每次开机就会自动挂载啦</p><p>vim &#x2F;etc&#x2F;fstab</p><p>在结尾添加像这样</p><p>&#x2F;dev&#x2F;sdb1 &#x2F;mnt&#x2F;data ext4 defaults 0 0</p><p>保存退出</p><p>最后挂载一下</p><p>mount -a</p><p>大功告成</p><p>那么已经有分区的情况下，比如你有sdc1或者sdf1等等，是可以直接挂载的！！！</p><p>首先用命令blkid查看分区是什么格式</p><p>该命令能看到UUID和文件系统等信息</p><p>blkid<br>这里我们可以看到我的vda1分区UUID是  003961f0-ac06-4b9a-b512-8199e547b7d5</p><p>                                            文件格式是     ext4</p><p>那么我们只需要去创建好要挂载的目录</p><p>比如</p><p>cd &#x2F;mnt</p><p>mkdir data1</p><p>mkdir data2</p><p>……..</p><p>然后打开fstab，并且在下方写入</p><p>&#x2F;dev&#x2F;vda1 &#x2F;mnt&#x2F;data1 ext4 defaults 0 0</p><p>如果你的文件格式是ntfs，还是和上面一样依葫芦画瓢，以sdc1为例</p><p>&#x2F;dev&#x2F;sdc1 &#x2F;mnt&#x2F;data2 ntfs defaults 0 0</p><p>写完保存后mount -a即可</p><p>另外一种就是利用UUID挂载了</p><p>在终端里用命令ls -al &#x2F;dev&#x2F;disk&#x2F;by-uuid列出所有盘分区的UUID</p><p>或者像前面提到的那样用blkid一样可以看到UUID</p><p>其他步骤像上面一样只不过</p><p>原来是在fstab里这样编辑</p><p>&#x2F;dev&#x2F;sda1 &#x2F;mnt&#x2F;data ext4 defaults 0 0</p><p>变成</p><p>UUID&#x3D;003961f0-ac06-4b9a-b512-8199e547b7d5 &#x2F;mnt&#x2F;data ext4 defaults 0 0</p><p>把前面的&#x2F;dev&#x2F;sda1 变成了UUID&#x3D;<br>这样做的好处是避免分区名字改变导致emergency mode</p>]]></content>
       
       
+      <categories>
+          
+          <category> linux </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> 硬盘 </tag>
+            
+            <tag> 挂载 </tag>
+            
+        </tags>
       
     </entry>
     
     
     
     <entry>
-      <title>Hello World</title>
-      <link href="/2023/01/29/hello-world/"/>
-      <url>/2023/01/29/hello-world/</url>
+      <title>LINUX路由（网关）相关</title>
+      <link href="/2023/06/01/linux-lu-you-wang-guan-xiang-guan/"/>
+      <url>/2023/06/01/linux-lu-you-wang-guan-xiang-guan/</url>
       
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+        <content type="html"><![CDATA[<p>要实现两个不同的子网之间的通信，需要一台连接两个网络的路由器，或者同时位于两个网络的网关来实现。在Linux系统中，设置路由通常是为了解决以下问题：该Linux系统在一个局域网中，局域网中有一个网关，能够让机器访问Internet，那么就需要将这台机器的IP地址设置为 Linux机器的默认路由。</p><p>查看系统路由信息</p><blockquote><p>route [-n&#x2F;-ee]<br>参数：<br>-n ：不要使用通讯协定或主机名称，直接使用 IP 或 port number；<br>-ee ：使用更详细的资讯来显示<br>-c 显示更多信息<br>-n 不解析名字<br>-v 显示详细的处理信息<br>-F 显示发送信息<br>-C 显示路由缓存<br>显示内容说明：</p></blockquote><p>Destination 目标网段或者主机(本机的数据要发送的目的地：子网或主机)，与Genmask组成一个网段<br>Gateway 网关地址 (如果是默认网关，网关的地址必须和自己的主机上的其中一块网卡在同一子网），* 表示目标是本主机所属的网络，不需要路由<br>Genmask 网络掩码(如果目标网络的的子网掩码为255.255.255.255,说明目标是一台主机；如果子网掩码为’0.0.0.0’ 说明该路由是默认路由)<br>Flags 标记; U: 路由是活动的;H: 目标是一个主机 (IP) 而非网段;G: 路由指向网关(需要透过外部的主机 (gateway) 来转递封包(该行有gw));R: 恢复动态路由产生的表项;D: 由路由的后台程序动态地安装(已经由服务或转 port 功能设定为动态路由 );M: 由路由的后台程序修改;!: 拒绝路由(用来抵挡不安全的网域！)<br>Metric 路由距离，到达指定网络所需的中转数<br>Ref 恒为0，路由项引用次数<br>Use 此路由项被路由软件查找的次数<br>Iface 该路由表项对应的输出接口，即eth0,eth1等网络接口名<br>配置静态路由</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">route <span class="token punctuation">[</span>add<span class="token operator">|</span>del<span class="token punctuation">]</span> <span class="token punctuation">[</span>-net<span class="token operator">|</span>-host<span class="token punctuation">]</span> target <span class="token punctuation">[</span>netmask Nm<span class="token punctuation">]</span> <span class="token punctuation">[</span>gw Gw<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>dev<span class="token punctuation">]</span> If<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><blockquote><p>参数说明<br>add 添加一条路由规则<br>del 删除一条路由规则<br>-net 目的地址是一个网络<br>-host 目的地址是一个主机<br>target 目的网络或主机<br>netmask 目的地址的网络掩码<br>gw 路由数据包通过的网关<br>dev 为路由指定的网络接口<br>用法示例</p></blockquote><p>在&#x2F;etc&#x2F;rc.local里面添加：直接将在命令行操作的命令复制到该文件中，保存退出即可。</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#添加默认网关</span>route <span class="token function">add</span> default gw <span class="token number">10.0</span>.0.1<span class="token comment">#删除默认网关</span>route del default gw <span class="token number">10.0</span>.0.1<span class="token comment">#添加到主机的路由</span>route <span class="token function">add</span> <span class="token parameter variable">-host</span> <span class="token number">192.168</span>.10.2 dev eth3<span class="token comment">#删除到主机的路由</span>route del <span class="token parameter variable">-host</span> <span class="token number">192.168</span>.10.2 dev eth3<span class="token comment">#添加到网络的路由</span>route <span class="token function">add</span> <span class="token parameter variable">-net</span> <span class="token number">192.168</span>.55.0 netmask <span class="token number">255.255</span>.255.0 eth3<span class="token comment">#删除到网络的路由</span>route del <span class="token parameter variable">-net</span> <span class="token number">192.168</span>.55.0 netmask <span class="token number">255.255</span>.255.0 eth3<span class="token comment">#设定指定的网段不可到达</span>route <span class="token function">add</span> <span class="token parameter variable">-net</span> <span class="token number">10.0</span>.0.0 netmask <span class="token number">255.0</span>.0.0 rejectroute del <span class="token parameter variable">-net</span> <span class="token number">10.0</span>.0.0 netmask <span class="token number">255.0</span>.0.0 reject<span class="token comment">#设置到指定网络为不可达，避免在连接到这个网络的地址时程序过长时间的等待，直接就知道该网络不可达。若要向带有 255.255.0.0 子网掩码和 10.27.0.1 下一跃点地址的 10.41.0.0 目标中添加一个永久路由</span>route <span class="token parameter variable">-p</span> <span class="token function">add</span> <span class="token number">10.41</span>.0.0 mask <span class="token number">255.255</span>.0.0 <span class="token number">10.27</span>.0.1 <span class="token comment">#若要向带有 255.255.0.0 子网掩码、10.27.0.1 下一跃点地址且其成本值标为 7 的 10.41.0.0 目标中添加一个路由</span>route <span class="token function">add</span> <span class="token number">10.41</span>.0.0 mask <span class="token number">255.255</span>.0.0 <span class="token number">10.27</span>.0.1 metric <span class="token number">7</span><span class="token comment">#若要删除以 10. 起始的 IP 路由表中的所有路由</span>route delete <span class="token number">10</span>.*<span class="token comment">#若要将带有 10.100.0.0 目标和 255.255.0.0 子网掩码的下一跃点地址从 10.100.0.1 修改为 10.100.0.254</span>route change <span class="token number">10.100</span>.0.0 mask <span class="token number">255.255</span>.0.0 <span class="token number">10.100</span>.0.254<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>附加网关设置，以centos7为例</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#查看设置</span>route <span class="token parameter variable">-n</span><span class="token comment">#编辑默认网关</span><span class="token function">sudo</span> <span class="token function">vim</span> /etc/sysconfig/network-scripts/ifcfg-ens33<span class="token comment">#以下为DHCP模式</span><span class="token assign-left variable">TYPE</span><span class="token operator">=</span>Ethernet<span class="token assign-left variable">PROXY_METHOD</span><span class="token operator">=</span>none<span class="token assign-left variable">BROWSER_ONLY</span><span class="token operator">=</span>no<span class="token assign-left variable">BOOTPROTO</span><span class="token operator">=</span>dhcp<span class="token assign-left variable">DEFROUTE</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV4FAILURE_FATAL</span><span class="token operator">=</span>no<span class="token assign-left variable">IPV6INIT</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV6_AUTOCONF</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV6_DEFROUTE</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV6_FAILURE_FATAL</span><span class="token operator">=</span>no<span class="token assign-left variable">IPV6_ADDR_GEN_MODE</span><span class="token operator">=</span>stable-privacy<span class="token assign-left variable">NAME</span><span class="token operator">=</span>ens33<span class="token assign-left variable">UUID</span><span class="token operator">=</span>575b45ac-0e3e-4469-b39f-902e19f30e97<span class="token assign-left variable">DEVICE</span><span class="token operator">=</span>ens33<span class="token assign-left variable">ONBOOT</span><span class="token operator">=</span>yes<span class="token comment">#以下为手动模式</span><span class="token assign-left variable">TYPE</span><span class="token operator">=</span>Ethernet<span class="token assign-left variable">PROXY_METHOD</span><span class="token operator">=</span>none<span class="token assign-left variable">BROWSER_ONLY</span><span class="token operator">=</span>no<span class="token assign-left variable">BOOTPROTO</span><span class="token operator">=</span>none<span class="token assign-left variable">DEFROUTE</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV4_FAILURE_FATAL</span><span class="token operator">=</span>no<span class="token assign-left variable">IPV6INIT</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV6_AUTOCONF</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV6_DEFROUTE</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV6_FAILURE_FATAL</span><span class="token operator">=</span>no<span class="token assign-left variable">IPV6_ADDR_GEN_MODE</span><span class="token operator">=</span>stable-privacy<span class="token assign-left variable">NAME</span><span class="token operator">=</span>ens33<span class="token assign-left variable">UUID</span><span class="token operator">=</span>575b45ac-0e3e-4469-b39f-902e19f30e97<span class="token assign-left variable">DEVICE</span><span class="token operator">=</span>ens33<span class="token assign-left variable">ONBOOT</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPADDR</span><span class="token operator">=</span><span class="token number">192.168</span>.159.131<span class="token assign-left variable">PREFIX</span><span class="token operator">=</span><span class="token number">24</span><span class="token assign-left variable">GATEWAY</span><span class="token operator">=</span><span class="token number">192.168</span>.159.2<span class="token comment">#重启网络</span><span class="token function">service</span> network restart方法一：通过命令行添加：<span class="token comment"># route add –net IP netmask MASK gw IP -p 或 route add –net IP/24 gw IP -p</span>如 route <span class="token function">add</span> –net <span class="token number">192.168</span>.100.0 netmask <span class="token number">255.255</span>.255.0 gw <span class="token number">192.168</span>.100.1 <span class="token parameter variable">-p</span>  或 route <span class="token function">add</span> –net <span class="token number">192.168</span>.100.0/24 gw <span class="token number">192.168</span>.100.1 <span class="token parameter variable">-p</span> 方法二：修改配置文件添加　　第一种：在linux启动执行脚本文件 rc.local 中添加命令　　<span class="token function">vi</span> /etc/rc.d/rc.local　　并在配置文件中写入　　 route <span class="token function">add</span> –net <span class="token number">192.168</span>.100.0 netmask <span class="token number">255.255</span>.255.0 gw <span class="token number">192.168</span>.100.1 <span class="token parameter variable">-p</span>  　　或 　　 route <span class="token function">add</span> –net <span class="token number">192.168</span>.100.0/24 gw <span class="token number">192.168</span>.100.1 <span class="token parameter variable">-p</span> 　　第二种：修改静态路由配置文件　　<span class="token function">vi</span> /etc/sysconfig/static-routes　　在配置文件中写入　　 any net <span class="token number">192.168</span>.100.0 netmask <span class="token number">255.255</span>.255.0 gw <span class="token number">192.168</span>.100.1 <span class="token comment">#rc.local无效添加如下</span> <span class="token builtin class-name">echo</span> /etc/rc.local <span class="token operator">>></span>/etc/profile <span class="token operator">&amp;&amp;</span>  <span class="token builtin class-name">source</span> /etc/profile<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><hr><h1 id="centos-ip-网关-dns设置"><a href="#centos-ip-网关-dns设置" class="headerlink" title="centos ip 网关 dns设置"></a>centos ip 网关 dns设置</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#编辑以下文件，编辑后按:wq保存</span><span class="token function">vi</span> /etc/sysconfig/network-scrip<span class="token assign-left variable">BOOTPROTO</span><span class="token operator">=</span>static<span class="token assign-left variable">DEVICE</span><span class="token operator">=</span>eth0<span class="token assign-left variable">NM_CONTROLLED</span><span class="token operator">=</span>no<span class="token assign-left variable">ONBOOT</span><span class="token operator">=</span>yes<span class="token assign-left variable">TYPE</span><span class="token operator">=</span>Ethernet<span class="token assign-left variable">USERCTL</span><span class="token operator">=</span>no<span class="token assign-left variable">IPADDR</span><span class="token operator">=</span><span class="token number">192.168</span>.0.129<span class="token assign-left variable">NETMASK</span><span class="token operator">=</span><span class="token number">255.255</span>.255.0<span class="token assign-left variable">GATEWAY</span><span class="token operator">=</span><span class="token number">192.168</span>.0.1<span class="token assign-left variable">DNS1</span><span class="token operator">=</span><span class="token number">114.114</span>.114.114<span class="token assign-left variable">IPV6INIT</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV6_AUTOCONF</span><span class="token operator">=</span>no<span class="token assign-left variable">IPV6_DEFAULTGW</span><span class="token operator">=</span>240e:982:9400:7::a:1<span class="token assign-left variable">IPV6ADDR</span><span class="token operator">=</span>240e:982:9400:7::a:118<span class="token assign-left variable">IPV6_DEFROUTE</span><span class="token operator">=</span>yes<span class="token assign-left variable">IPV6_FAILURE_FATAL</span><span class="token operator">=</span>yes<span class="token comment">#centos8</span><span class="token comment">#1.重启网卡之前一定要重新载入一下配置文件，不然不能立即生效</span>nmcli c reload<span class="token comment">#2.重启网卡（下面的三条命令都可以）：</span>nmcli c up eth0nmcli d reapply eth0nmcli d connect eth0<span class="token comment">#重启centos8的网卡，先载入新的配置文件，然后在执行重启网卡命令即可</span><span class="token comment">#centos7</span><span class="token function">service</span> network restart<span class="token comment">#如遇到仍不能访问，尝试修改</span><span class="token function">vi</span> /etc/resolv.conf <span class="token comment">#如不可编辑</span><span class="token comment">#1.查看是否具有属性</span>lsattr /etc/resolv.conf ----i--------e- /etc/resolv.con<span class="token comment">#默认文件是不具备属性的，如果有属性i，则无法修改、删除、修改通过如下命令进行修改</span>chattr <span class="token parameter variable">-i</span> /etc/resolv.conf<span class="token comment">#重启网卡服务</span>/etc/init.d/network restart<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><hr><h1 id="ubuntu18以后的网络设置"><a href="#ubuntu18以后的网络设置" class="headerlink" title="ubuntu18以后的网络设置"></a>ubuntu18以后的网络设置</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#纯路由操作</span>route del <span class="token parameter variable">-net</span> <span class="token number">0.0</span>.0.0 netmask <span class="token number">0.0</span>.0.0 gw <span class="token number">192.168</span>.0.1route <span class="token function">add</span> <span class="token parameter variable">-net</span> <span class="token number">0.0</span>.0.0 netmask <span class="token number">0.0</span>.0.0 gw <span class="token number">192.168</span>.0.213<span class="token comment">#配置文件目录</span><span class="token builtin class-name">cd</span> /etc/netplan<span class="token function">vi</span> 01-network-manager-all.yaml<span class="token comment">#网卡eth0使用dhcp方式配置ip网络，配置如下。yaml配置是用空格作为缩进对齐，不能使用tab键。</span>network:  version: <span class="token number">2</span>  renderer: networkd  ethernets:    eth0:      dhcp4: <span class="token function">yes</span>      dhcp6: no<span class="token comment">#网卡eth0使用静态ip方式，用关键字addresses指定ip地址和子网掩码（支持ipv4和ivp6），gateway4指定网关ip，nameservers 指定DNS。</span>network:  version: <span class="token number">2</span>  renderer: networkd  ethernets:    eth0:      addresses:        - <span class="token number">10.10</span>.10.2/24      gateway4: <span class="token number">10.10</span>.10.1      nameservers:          search: <span class="token punctuation">[</span>mydomain, otherdomain<span class="token punctuation">]</span>          addresses: <span class="token punctuation">[</span><span class="token number">10.10</span>.10.1, <span class="token number">1.1</span>.1.1<span class="token punctuation">]</span><span class="token comment">#保存后</span>netplan apply<span class="token comment">#保存后</span>network:    version: <span class="token number">2</span>    ethernets:        eth0:            dhcp4: no            addresses:            - <span class="token number">192.168</span>.0.132/16            gateway4: <span class="token number">192.168</span>.0.102            match:                macaddress: fa:16:3e:9f:75:c2            mtu: <span class="token number">1500</span>            nameservers:                addresses:                - <span class="token number">114.114</span>.114.114                - <span class="token number">8.8</span>.8.8            set-name: eth0~                          <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
       
       
+      <categories>
+          
+          <category> linux </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> 网关 </tag>
+            
+            <tag> 路由 </tag>
+            
+            <tag> gateway </tag>
+            
+            <tag> route </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Electron打包EXE</title>
+      <link href="/2022/05/26/electron-da-bao-exe/"/>
+      <url>/2022/05/26/electron-da-bao-exe/</url>
+      
+        <content type="html"><![CDATA[<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> <span class="token function">install</span> electron-packager <span class="token parameter variable">-g</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>基本命令：</p><blockquote><p>electron-packager –platform&#x3D; –arch&#x3D; [optional flags…]<br>命令说明：<br>sourcedir：项目源文件所在路径（唯一的必须参数）<br>appname：项目名称（直接使用package.json文件中的name属性更方便）<br>platform：要构建哪个平台的应用（Windows、Mac 还是 Linux）<br>arch：决定了使用 x86 （ia32）还是 x64（x64），还是两个架构都用<br>optional options：可选选项</p></blockquote><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>  <span class="token property">"start"</span><span class="token operator">:</span> <span class="token string">"electron ."</span><span class="token punctuation">,</span>  <span class="token property">"packager"</span><span class="token operator">:</span> <span class="token string">"electron-packager . fukaiitapp --out fukaiitapp --arch=x64 --overwrite --ignore=node_modules"</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pm run package（r）<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> appDev </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Electron </tag>
+            
+            <tag> 打包 </tag>
+            
+            <tag> exe </tag>
+            
+            <tag> js </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>windows命令行中文乱码</title>
+      <link href="/2022/05/16/windows-ming-ling-xing-zhong-wen-luan-ma/"/>
+      <url>/2022/05/16/windows-ming-ling-xing-zhong-wen-luan-ma/</url>
+      
+        <content type="html"><![CDATA[<p>设置成UTF-8</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">CHCP <span class="token number">65001</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> windows </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> windows terminal </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>NODE&amp;VUE环境相关</title>
+      <link href="/2022/04/12/node-vue-huan-jing-xiang-guan/"/>
+      <url>/2022/04/12/node-vue-huan-jing-xiang-guan/</url>
+      
+        <content type="html"><![CDATA[<h4 id="npm切换cnmp镜像，淘宝源已更名"><a href="#npm切换cnmp镜像，淘宝源已更名" class="headerlink" title="npm切换cnmp镜像，淘宝源已更名"></a>npm切换cnmp镜像，淘宝源已更名</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">-g</span> cnpm <span class="token parameter variable">--registry</span><span class="token operator">=</span>https://registry.npmmirror.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h4 id="全局脚手架"><a href="#全局脚手架" class="headerlink" title="全局脚手架"></a>全局脚手架</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cnpm <span class="token function">install</span> <span class="token parameter variable">--global</span> vue-cli<span class="token comment"># OR</span><span class="token function">npm</span> <span class="token function">install</span> <span class="token parameter variable">-g</span> @vue/cli<span class="token comment"># OR使用yarn</span><span class="token function">yarn</span> global <span class="token function">add</span> @vue/cli<span class="token comment"># 后续升级</span><span class="token function">npm</span> update <span class="token parameter variable">-g</span> @vue/cli<span class="token comment"># OR</span><span class="token function">yarn</span> global upgrade <span class="token parameter variable">--latest</span> @vue/cli<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h4 id="项目创建"><a href="#项目创建" class="headerlink" title="项目创建"></a>项目创建</h4><pre class="line-numbers language-none"><code class="language-none">CD ....vue create hello-world#使用图形及帮助vue uivue create --help#Vue2vue init webpack my-project<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> web </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> node.js </tag>
+            
+            <tag> vue </tag>
+            
+            <tag> 环境 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>CSS选择器练习及答案</title>
+      <link href="/2022/03/22/css-xuan-ze-qi-lian-xi-ji-da-an/"/>
+      <url>/2022/03/22/css-xuan-ze-qi-lian-xi-ji-da-an/</url>
+      
+        <content type="html"><![CDATA[<p>练习地址<br><a href="https://github.com/flukeout/css-diner">https://github.com/flukeout/css-diner</a></p><pre class="line-numbers language-css" data-language="css"><code class="language-css">第一关：元素选择器plateplate元素select the plates第二关：元素选择器bentobento元素select the bento plate第三关：ID选择器#fancyid为fancy的元素select the fancy plate第四关：后代选择器plate appleplate祖先元素下的后代元素appleselect the apple on the plate第五关：结合后代和ID选择器#fancy pickleid为fancy的祖先元素下的pickle元素select the pickle on the fancy plate第六关：类选择器.small类名为small的元素select the small apple第七关：结合类选择器orange.small 同时满足类名为small且为orange的元素select the small orange第八关：后代选择器和类选择器bento orange.smallbento父元素下面类名为small的orange的子元素select the small orange in the bentos第九关：逗号选择器plate<span class="token punctuation">,</span>bento在div元素中的plate和bento元素selector all the plates and bentos第十关：通配选择器*在主体中的所用元素select all things第十一关：结合通用选择器plate *plate父元素的所有子元素select everyting on a plate第十二关：相邻兄弟选择器plate+appleplate元素的后一个元素selelc evey apple that's next to a apple第十三关：通用兄弟选择器bento~picklebento元素后的多个pickle元素select the pickle beside the bento第十四关：后代选择器plate>appleplate父元素下面的apple子元素select the apple directly on a plate<span class="token property">第十五关：</span><span class="token punctuation">:</span>first-child<span class="token property">orange</span><span class="token punctuation">:</span>first-child第一个orange元素select the top orange<span class="token property">第十六关：</span><span class="token punctuation">:</span>only-child<span class="token property">plate</span> <span class="token punctuation">:</span>only-child选择plate中唯一种类的子元素select the apple and the pickle on the plate注意：only-child 选择器匹配属于父元素中唯一子元素的元素<span class="token property">第十七关：</span><span class="token punctuation">:</span>last-child  #<span class="token property">fancy</span> <span class="token punctuation">:</span>last-child<span class="token punctuation">,</span><span class="token property">pickle</span><span class="token punctuation">:</span>last-childselect the small apple and the pickle选择id为fancy的元素最后一个子元素和pickle元素的最后一个元素<span class="token property">第十八关：</span><span class="token punctuation">:</span>nth-child<span class="token property">plate</span><span class="token punctuation">:</span><span class="token function">nth-child</span><span class="token punctuation">(</span>3<span class="token punctuation">)</span>select the 3rd plate选择第三个plate元素<span class="token property">第十九关：</span><span class="token punctuation">:</span><span class="token function">nth-last-child</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token property">bento</span><span class="token punctuation">:</span><span class="token function">nth-last-child</span><span class="token punctuation">(</span>3<span class="token punctuation">)</span>倒数从第三个开始的bento元素select the 1st bento<span class="token property">第二十关：</span><span class="token punctuation">:</span>first-of-type<span class="token property">apple</span><span class="token punctuation">:</span>first-of-type第一个apple元素select first apple<span class="token property">第二十一关：</span><span class="token punctuation">:</span>nth-of-type<span class="token property">plate</span><span class="token punctuation">:</span><span class="token function">nth-of-type</span><span class="token punctuation">(</span>even<span class="token punctuation">)</span>选择所有偶数个的plateselect all even plates<span class="token property">第二十二关：</span><span class="token punctuation">:</span><span class="token function">nth-of-type</span><span class="token punctuation">(</span>An+B<span class="token punctuation">)</span><span class="token property">plate</span><span class="token punctuation">:</span><span class="token function">nth-of-type</span><span class="token punctuation">(</span>2n+3<span class="token punctuation">)</span>从第三个元素起，每隔一个选择一个plate元素select evey 2nd plate，starting from the 3rd<span class="token property">第二十三关：</span><span class="token punctuation">:</span>only-of-typeplate <span class="token property">apple</span><span class="token punctuation">:</span>only-of-typeplate元素中仅有一个的apple元素select the apple on the middle plate注意：only-of-type 选择器匹配属于其父元素的特定类型的唯一子元素的每个元素<span class="token property">第二十四关：</span><span class="token punctuation">:</span>last-of-type<span class="token property">orange</span><span class="token punctuation">:</span>last-of-type<span class="token punctuation">,</span><span class="token property">apple</span><span class="token punctuation">:</span>last-of-type选择最后一个orange元素和最后一个apple元素select the last apple and orange<span class="token property">第二十五关：</span><span class="token punctuation">:</span>empty<span class="token property">bento</span><span class="token punctuation">:</span>emptyselect the empty bentos<span class="token property">注意：</span><span class="token punctuation">:</span>empty选择器匹配没有子元素（包括文本节点空格）的每个元素<span class="token property">第二十六关：</span><span class="token punctuation">:</span><span class="token function">not</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span><span class="token property">apple</span><span class="token punctuation">:</span><span class="token function">not</span><span class="token punctuation">(</span>.small<span class="token punctuation">)</span>选择类名不为small的apple元素select the big apple<span class="token property">注意：</span><span class="token punctuation">:</span><span class="token function">not</span><span class="token punctuation">(</span><span class="token punctuation">)</span>选择器匹配没和元素是不是指定的元素/选择器第二十七关：[attribute] 属性选择器[for]有for属性的所有元素select the items for someone注意：[attribute] 属性选择器选择有相应属性的元素第二十八关：A[attribute] 属性选择器plate[for]有for属性的plate元素select the plates for someone第二十九关：[attribute=<span class="token string">'value'</span>][for=<span class="token string">'Vitaly'</span>]选择for属性值为Vitaly的元素select Vitaly‘s meal注意：[attribute=<span class="token string">'value'</span>]属性选择器选择属性为指定值的元素第三十关：[attribute^=<span class="token string">'value'</span>] [for^=<span class="token string">'Sa'</span>]for属性值以Sa开始的所有元素select the items for names that start width ’Sa'注意：[attribute^=<span class="token string">'value'</span>] 属性选择器选择所有属性值以指定字母开始的元素第三十一关：[attribute$=<span class="token string">"value"</span>][for$=<span class="token string">'ato'</span>]选择for属性值以ato结尾的元素select the items for names that end width ‘ato'注意：[attribute$=<span class="token string">"value"</span>] 属性选择器后面的后几个字母需要以 value结尾第三十二关：[attribute*=<span class="token string">"value"</span>][for*=<span class="token string">'obb'</span>]选择for属性值中包含obb的元素select the meals for names that contain ’obb'注意：[attribute*=<span class="token string">"value"</span>]选择器匹配元素属性值包含指定值的元素<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> web </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> web </tag>
+            
+            <tag> css </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>数据通信IPv4地址规划</title>
+      <link href="/2021/11/22/shu-ju-tong-xin-ipv4-di-zhi-gui-hua/"/>
+      <url>/2021/11/22/shu-ju-tong-xin-ipv4-di-zhi-gui-hua/</url>
+      
+        <content type="html"><![CDATA[<p>目前常用的仍然以v4版本为主的环境下。子网划分方式如下：<br><strong>子网个数：256&#x2F;2的X次方，X为主机位数；</strong><br>对应的子网承载主机个数为2的X次方-2（其中最小为网络位，最大为广播位，不可用）。</p><blockquote><p>速记<br>&#x2F;25 掩码128 10000000<br>&#x2F;26 掩码192 11000000<br>&#x2F;27 掩码224 11100000<br>&#x2F;28 掩码240 11110000<br>&#x2F;29 掩码248 11111000<br>&#x2F;30 掩码252 11111100</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> datacome </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> datacom </tag>
+            
+            <tag> ipv4 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>通过Basic Auth加密网站</title>
+      <link href="/2021/11/06/tong-guo-basic-auth-jia-mi-wang-zhan/"/>
+      <url>/2021/11/06/tong-guo-basic-auth-jia-mi-wang-zhan/</url>
+      
+        <content type="html"><![CDATA[<p>简单时记录一下，通过Nginx，其实caddy或者apache是一样的，不多说了，整体上来说很简单：</p><ol><li><p>代理，这里路径随便写一个，但是文件要建立在相应的目录下</p></li><li><p>设置密码</p><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">location ~* <span class="token punctuation">&#123;</span> auth_basic           <span class="token string">"closed site"</span><span class="token punctuation">;</span> auth_basic_user_file /pswd/htpasswd<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span><span class="token builtin class-name">printf</span> <span class="token string">"admin:<span class="token variable"><span class="token variable">$(</span>openssl <span class="token function">passwd</span> <span class="token parameter variable">-crypt</span> <span class="token number">123456</span><span class="token variable">)</span></span><span class="token entity" title="\n">\n</span>"</span> <span class="token operator">>></span>/pswd/htpasswd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> linux </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> web </tag>
+            
+            <tag> auth </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>远程SSH认证关闭密码改用密钥的方法</title>
+      <link href="/2020/06/07/yuan-cheng-ssh-ren-zheng-guan-bi-mi-ma-gai-yong-mi-yao-de-fang-fa/"/>
+      <url>/2020/06/07/yuan-cheng-ssh-ren-zheng-guan-bi-mi-ma-gai-yong-mi-yao-de-fang-fa/</url>
+      
+        <content type="html"><![CDATA[<h4 id="大多时候对SSH的安全有两种方式："><a href="#大多时候对SSH的安全有两种方式：" class="headerlink" title="大多时候对SSH的安全有两种方式："></a>大多时候对SSH的安全有两种方式：</h4><blockquote><p>改一个高位的端口及强密码<br>关闭密码认证，改用密钥文件</p></blockquote><h4 id="下面分享取消密码认证，更改为密钥认证的方法："><a href="#下面分享取消密码认证，更改为密钥认证的方法：" class="headerlink" title="下面分享取消密码认证，更改为密钥认证的方法："></a>下面分享取消密码认证，更改为密钥认证的方法：</h4><blockquote><p>生成密钥对（生成以后保存好以后换电脑也直接用这个了）<br>以下 ssh-keygen 命令默认在 ~&#x2F;.ssh 目录（windows在用户目录下找）中生成 4096 位 SSH RSA 公钥和私钥文件。 如果当前位置存在 SSH 密钥对，这些文件将被覆盖。</p></blockquote><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ssh-keygen <span class="token parameter variable">-m</span> PEM <span class="token parameter variable">-t</span> rsa <span class="token parameter variable">-b</span> <span class="token number">4096</span>ssh-keygen <span class="token punctuation">\</span>    <span class="token parameter variable">-m</span> PEM <span class="token punctuation">\</span>    <span class="token parameter variable">-t</span> rsa <span class="token punctuation">\</span>    <span class="token parameter variable">-b</span> <span class="token number">4096</span> <span class="token punctuation">\</span>    <span class="token parameter variable">-C</span> <span class="token string">"azureuser@myserver"</span> <span class="token punctuation">\</span>    <span class="token parameter variable">-f</span> ~/.ssh/mykeys/myprivatekey <span class="token punctuation">\</span>    <span class="token parameter variable">-N</span> mypassphrase<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h4 id="命令解释"><a href="#命令解释" class="headerlink" title="命令解释"></a>命令解释</h4><blockquote><p>ssh-keygen &#x3D; 用于创建密钥的程序<br>-m PEM &#x3D; 将密钥的格式设为 PEM<br>-t rsa &#x3D; 要创建的密钥类型，本例中为 RSA 格式<br>-b 4096 &#x3D; 密钥的位数，本例中为 4096<br>-C “azureuser@myserver” &#x3D; 追加到公钥文件末尾以便于识别的注释。 通常以电子邮件地址用作注释，但也可以使用任何最适合你基础结构的事物。<br>-f ~&#x2F;.ssh&#x2F;mykeys&#x2F;myprivatekey &#x3D; 私钥文件的文件名（如果选择不使用默认名称）。 追加了 .pub 的相应公钥文件在相同目录中生成。 该目录必须存在。<br>-N mypassphrase &#x3D; 用于访问私钥文件的其他密码。</p></blockquote><h4 id="下面是将密钥操作至服务器，手动用SFTP放过去也可以，记得赋权。"><a href="#下面是将密钥操作至服务器，手动用SFTP放过去也可以，记得赋权。" class="headerlink" title="下面是将密钥操作至服务器，手动用SFTP放过去也可以，记得赋权。"></a>下面是将密钥操作至服务器，手动用SFTP放过去也可以，记得赋权。</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> ~/.ssh/id_rsa.pub <span class="token operator">|</span> <span class="token function">ssh</span> remote_username@server_ip_address <span class="token string">"mkdir -p ~/.ssh &amp;&amp; chmod 700 ~/.ssh &amp;&amp; cat >> ~/.ssh/authorized_keys &amp;&amp; chmod 600 ~/.ssh/authorized_keys"</span><span class="token comment">#修改config</span><span class="token function">vim</span> /etc/ssh/sshd_config<span class="token comment">#如果是vim可以用“/”搜以下设置并修改。“:wq”退出</span>PasswordAuthentication noChallengeResponseAuthentication noUsePAM no<span class="token comment">#重启服务</span>systemctl restart <span class="token function">ssh</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> linux </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> ssh </tag>
+            
+        </tags>
       
     </entry>
     
