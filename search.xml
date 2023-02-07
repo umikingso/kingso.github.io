@@ -66,6 +66,33 @@
     
     
     <entry>
+      <title>Windows远程连接桌面报错</title>
+      <link href="/2022/09/21/windows-yuan-cheng-lian-jie-zhuo-mian-bao-cuo/"/>
+      <url>/2022/09/21/windows-yuan-cheng-lian-jie-zhuo-mian-bao-cuo/</url>
+      
+        <content type="html"><![CDATA[<p>Windows远程连接桌面报错“由于没有远程桌面授权服务器可以提供许可证，远程会话连接已断开。请跟服务器管理员联系。”</p><ol><li>regedit</li><li>\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\RCM\GracePeriod</li><li>右键“GracePeriod”，点击权限，再点击高级</li><li>选择Administrator用户，双击打开权限项目，勾选完全控制，点击确定</li><li>修改后，获取好权限，删除右侧有键值的注册表，删除后重启服务器</li></ol><p><strong>如遇到权限问题</strong></p><ol><li>高级-审核中，先对所有者进行更改</li><li>在选择用户或组的界面中，打开左下角的高级，并进行立即查找</li><li>选中Administrators这个组，然后确定</li><li>在修改好用户组之后，进入审核项目的添加</li><li>首先是对主体进行操作，选择主体</li><li>重复23动作选择Administrators组为主体，并授予 完全控制的权限</li><li>确定后，这样就可以对上项目的权限进行修改了。应用后，再确定，即可</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> windows </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> windows </tag>
+            
+            <tag> 远程 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Electron打包EXE</title>
       <link href="/2022/05/26/electron-da-bao-exe/"/>
       <url>/2022/05/26/electron-da-bao-exe/</url>
@@ -221,9 +248,9 @@
       
         <tags>
             
-            <tag> linux </tag>
-            
             <tag> web </tag>
+            
+            <tag> linux </tag>
             
             <tag> auth </tag>
             
