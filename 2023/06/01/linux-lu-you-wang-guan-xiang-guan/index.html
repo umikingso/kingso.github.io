@@ -457,6 +457,8 @@ route <span class="token parameter variable">-n</span>
 
 <span class="token comment">#重启网络</span>
 <span class="token function">service</span> network restart
+<span class="token comment">#失败是manage没起</span>
+
 
 方法一：通过命令行添加：
 
@@ -491,9 +493,7 @@ route <span class="token parameter variable">-n</span>
 　　 any net <span class="token number">192.168</span>.100.0 netmask <span class="token number">255.255</span>.255.0 gw <span class="token number">192.168</span>.100.1
 
  <span class="token comment">#rc.local无效添加如下</span>
- <span class="token builtin class-name">echo</span> /etc/rc.local <span class="token operator">>></span>/etc/profile <span class="token operator">&amp;&amp;</span>  <span class="token builtin class-name">source</span> /etc/profile
-
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+ <span class="token builtin class-name">echo</span> /etc/rc.local <span class="token operator">>></span>/etc/profile <span class="token operator">&amp;&amp;</span>  <span class="token builtin class-name">source</span> /etc/profile<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <hr>
 <h1 id="centos-ip-网关-dns设置"><a href="#centos-ip-网关-dns设置" class="headerlink" title="centos ip 网关 dns设置"></a>centos ip 网关 dns设置</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#编辑以下文件，编辑后按:wq保存</span>
