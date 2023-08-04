@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>windows主机硬盘策略脱机</title>
+      <link href="/2023/08/04/windows-zhu-ji-ying-pan-ce-lue-tuo-ji/"/>
+      <url>/2023/08/04/windows-zhu-ji-ying-pan-ce-lue-tuo-ji/</url>
+      
+        <content type="html"><![CDATA[<p>Windows操作系统SAN策略分为三种类型: OnlineAll，OfflineShared，Offlinelnternal</p><table><thead><tr><th><strong>类型</strong></th><th><strong>说明</strong></th></tr></thead><tbody><tr><td>OnlineAll</td><td>表示所有新发现磁盘都置于在线模式。</td></tr><tr><td>OfflineShared</td><td>表示所有共享总线上（比如FC，ISCSI）的新发现磁盘都置于离线模式，非共享总线上的磁盘都置于在线模式。</td></tr><tr><td>OfflineInternal</td><td>表示所有新发现磁盘都置于离线模式。</td></tr></tbody></table><p>对于部分版本的Windows操作系统(如Windows 2008&#x2F;2012 企业版、数据中心版)，默认是共享离线olinehared模式。</p><ol><li><p>右键单击对应的磁盘，然后单击<strong>联机</strong>即可</p></li><li><p>如果需要之后添加磁盘自动联机，可使用DiskPart磁盘分区管理工具来查询、设置云服务器的SAN策略，将其修改为OnlineAll类型即可。</p><ul><li><p>解决方案：</p><ol><li><p>登录实例，使用管理员用户打开运行窗口，输入<code>diskpart</code>命令，然后单击<strong>确定</strong>。</p></li><li><p>执行以下命令，查看ECS实例当前的SAN策略。</p><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">san<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>系统显示类似如下，说明当前SAN策略为OfflineShared。<img src="https://help-static-aliyun-doc.aliyuncs.com/assets/img/zh-CN/3196395761/p520021.png"></p></li><li><p>执行以下命令，修改ECS实例的SAN策略为OnlineAll。</p><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">san policy<span class="token operator">=</span>onlineall<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li><li><p>再次执行<code>san</code>命令，确认SAN策略已修改。</p></li></ol></li></ul></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> windows </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> windows </tag>
+            
+            <tag> disk </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>linux硬盘挂载</title>
       <link href="/2023/06/17/linux-ying-pan-gua-zai/"/>
       <url>/2023/06/17/linux-ying-pan-gua-zai/</url>
@@ -112,33 +139,6 @@
             <tag> windows </tag>
             
             <tag> 远程 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>windows主机硬盘策略脱机</title>
-      <link href="/2022/08/04/windows-zhu-ji-ying-pan-ce-lue-tuo-ji/"/>
-      <url>/2022/08/04/windows-zhu-ji-ying-pan-ce-lue-tuo-ji/</url>
-      
-        <content type="html"><![CDATA[<p>Windows操作系统SAN策略分为三种类型: OnlineAll，OfflineShared，Offlinelnternal</p><table><thead><tr><th><strong>类型</strong></th><th><strong>说明</strong></th></tr></thead><tbody><tr><td>OnlineAll</td><td>表示所有新发现磁盘都置于在线模式。</td></tr><tr><td>OfflineShared</td><td>表示所有共享总线上（比如FC，ISCSI）的新发现磁盘都置于离线模式，非共享总线上的磁盘都置于在线模式。</td></tr><tr><td>OfflineInternal</td><td>表示所有新发现磁盘都置于离线模式。</td></tr></tbody></table><p>对于部分版本的Windows操作系统(如Windows 2008&#x2F;2012 企业版、数据中心版)，默认是共享离线olinehared模式。</p><ol><li><p>右键单击对应的磁盘，然后单击<strong>联机</strong>即可</p></li><li><p>如果需要之后添加磁盘自动联机，可使用DiskPart磁盘分区管理工具来查询、设置云服务器的SAN策略，将其修改为OnlineAll类型即可。</p><ul><li><p>解决方案：</p><ol><li><p>登录实例，使用管理员用户打开运行窗口，输入<code>diskpart</code>命令，然后单击<strong>确定</strong>。</p></li><li><p>执行以下命令，查看ECS实例当前的SAN策略。</p><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">san<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>系统显示类似如下，说明当前SAN策略为OfflineShared。<img src="https://help-static-aliyun-doc.aliyuncs.com/assets/img/zh-CN/3196395761/p520021.png"></p></li><li><p>执行以下命令，修改ECS实例的SAN策略为OnlineAll。</p><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">san policy<span class="token operator">=</span>onlineall<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li><li><p>再次执行<code>san</code>命令，确认SAN策略已修改。</p></li></ol></li></ul></li></ol>]]></content>
-      
-      
-      <categories>
-          
-          <category> windows </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> windows </tag>
-            
-            <tag> disk </tag>
             
         </tags>
       
