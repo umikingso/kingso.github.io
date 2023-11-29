@@ -1,0 +1,1464 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="基于CentOS7原生部署ng-php-wp, 記憶の海">
+    <meta name="description" content="关于环境：#最小化安装后开网
+
+vi /etc/sysconfig/network-scripts
+
+onboot——&gt;yes
+
+systemctl start network
+
+
+#防火墙关闭
+systemctl status firew">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>基于CentOS7原生部署ng-php-wp | 記憶の海</title>
+    <link rel="icon" type="image/x-icon, image/vnd.microsoft.icon" href="/favicon.ico">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">記憶の海</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">記憶の海</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">基于CentOS7原生部署ng-php-wp</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/linux/">
+                                <span class="chip bg-color">linux</span>
+                            </a>
+                        
+                            <a href="/tags/wp/">
+                                <span class="chip bg-color">wp</span>
+                            </a>
+                        
+                            <a href="/tags/nginx/">
+                                <span class="chip bg-color">nginx</span>
+                            </a>
+                        
+                            <a href="/tags/php/">
+                                <span class="chip bg-color">php</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/linux/" class="post-category">
+                                linux
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2023-09-08
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h4 id="关于环境："><a href="#关于环境：" class="headerlink" title="关于环境："></a>关于环境：</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#最小化安装后开网</span>
+
+<span class="token function">vi</span> /etc/sysconfig/network-scripts
+
+onboot——<span class="token operator">></span>yes
+
+systemctl start network
+
+
+<span class="token comment">#防火墙关闭</span>
+systemctl status firewalld
+systemctl stop firewalld
+systemctl disable firewalld
+
+<span class="token comment">#bash补全</span>
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> bash-completion  <span class="token comment">#之后要bash一下刷新参数，使之生效</span>
+
+<span class="token comment">#wget等工具下载</span>
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> <span class="token function">wget</span> <span class="token function">unzip</span>
+
+
+<span class="token comment">#我们在Centos下使用yum安装时往往找不到rpm的情况，官方的rpm repository提供的</span>
+<span class="token comment">#rpm包也不够丰富，很多时候需要自己编译很痛苦，而EPEL恰恰可以解决这两方面的问题</span>
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> epel-release
+
+<span class="token comment">#更新yum源</span>
+yum <span class="token parameter variable">-y</span> update
+
+<span class="token comment">#安装nginx使能，安装php</span>
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> nginx
+systemctl <span class="token builtin class-name">enable</span> nginx  <span class="token comment">#设置nginx服务开机自启动</span>
+<span class="token function">rpm</span> <span class="token parameter variable">-Uvh</span> https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm  
+<span class="token function">rpm</span> <span class="token parameter variable">-Uvh</span> https://mirror.webtatic.com/yum/el7/webtatic-release.rpm   <span class="token comment">#安装相关yum源</span>
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> php72w-tidy php72w-common php72w-devel php72w-pdo php72w-mysqlnd php72w-gd php72w-ldap php72w-mbstring php72w-mcrypt php72w-fpm php-redis <span class="token comment">#安装php相关包</span>
+systemctl <span class="token builtin class-name">enable</span> php-fpm.service  <span class="token comment">#设置php服务开机自启动</span>
+systemctl start php-fpm.service  <span class="token comment">#启动php服务 </span>
+<span class="token comment">#安装熟悉的编辑工具，如vim</span>
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> <span class="token function">vim</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="配置NGINX文件"><a href="#配置NGINX文件" class="headerlink" title="配置NGINX文件"></a>配置NGINX文件</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#编辑nginx配置文件（编辑前可以先进行备份）</span>
+<span class="token function">cp</span> /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+<span class="token function">vim</span> /etc/nginx/nginx.conf
+server <span class="token punctuation">&#123;</span>
+ listen <span class="token number">80</span><span class="token punctuation">;</span>  <span class="token comment">#如80端口修改为 8090</span>
+ listen <span class="token punctuation">[</span>::<span class="token punctuation">]</span>:80<span class="token punctuation">;</span> <span class="token comment">#如80端口修改为 8090</span>
+ server_name _<span class="token punctuation">;</span>
+ root /usr/share/nginx/html<span class="token punctuation">;</span>
+ <span class="token comment"># Load configuration files for the default server block.</span>
+ include /etc/nginx/default.d/*.conf<span class="token punctuation">;</span>
+ error_page <span class="token number">404</span> /404.html<span class="token punctuation">;</span>
+ location <span class="token operator">=</span> /404.html <span class="token punctuation">&#123;</span>
+<span class="token punctuation">&#125;</span>
+error_page <span class="token number">500</span> <span class="token number">502</span> <span class="token number">5503</span> <span class="token number">504</span> /50x.html<span class="token punctuation">;</span>
+ location <span class="token operator">=</span> /50x.html <span class="token punctuation">&#123;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">#红色部分为需要增加的内容</span>
+location / <span class="token punctuation">&#123;</span> 
+root /usr/share/nginx/html<span class="token punctuation">;</span>
+index index.php index.html index.htm<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+location ~ <span class="token punctuation">\</span>.php$ <span class="token punctuation">&#123;</span>
+root html<span class="token punctuation">;</span>
+fastcgi_pass <span class="token number">127.0</span>.0.1:9000<span class="token punctuation">;</span>
+fastcgi_index index.php<span class="token punctuation">;</span>
+fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html<span class="token variable">$fastcgi_script_name</span><span class="token punctuation">;</span>
+include fastcgi_params<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span class="token comment">#检查配置文件是否有问题,注意大括号的层级关系</span>
+nginx <span class="token parameter variable">-t</span> <span class="token parameter variable">-c</span> /etc/nginx/nginx.conf <span class="token comment">#返回OK successful</span>
+systemctl start nginx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="nginx常见配置问题"><a href="#nginx常见配置问题" class="headerlink" title="nginx常见配置问题"></a>nginx常见配置问题</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#nginx: [emerg] bind() to 0.0.0.0:8090 failed (13: Permission denied)尝试</span>
+<span class="token function">vim</span> /etc/selinux/config
+<span class="token function">reboot</span>
+systemctl status nginx
+<span class="token comment">#验证服务是否开启IP:8090</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="着手部署wordpress"><a href="#着手部署wordpress" class="headerlink" title="着手部署wordpress"></a>着手部署wordpress</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> /usr/share/nginx/html/
+<span class="token function">wget</span> https://wordpress.org/wordpress-5.4.10.zip
+<span class="token function">unzip</span> wordpress-5.4.10.zip
+<span class="token function">chmod</span> <span class="token parameter variable">-R</span> <span class="token number">777</span> wordpress 
+<span class="token comment">#修改wordpress配置文件</span>
+<span class="token builtin class-name">cd</span> wordpress
+<span class="token function">cp</span> wp-config-sample.php wp-config.php<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="mysql数据库服务安装"><a href="#mysql数据库服务安装" class="headerlink" title="mysql数据库服务安装"></a>mysql数据库服务安装</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#下载安装包，如果选用云厂商的RDS即可免于此步骤</span>
+<span class="token comment">#官网下载，社区，选对应的版本。wget。</span>
+<span class="token comment"># 查看是否自带mariadb数据库</span>
+yum list installed <span class="token function">grep</span> mariadb64
+
+<span class="token comment"># 卸载mariad</span>
+yum list installed <span class="token function">grep</span> mariadb_64
+
+
+
+
+
+<span class="token builtin class-name">cd</span> /usr/local
+<span class="token function">wget</span> https://downloads.mysql.com/archives/get/p/23/file/mysql-5.7.43-linux-glibc2.12-x86_64.tar.gz
+
+<span class="token function">tar</span> <span class="token parameter variable">-xvf</span> mysql-5.7.43-linux-glibc2.12-x86_64.tar.gz
+
+<span class="token function">mv</span> mysql-5.7.43-linux-glibc2.12-x86_64 mysql-5.7
+<span class="token builtin class-name">cd</span> mysql-5.7
+<span class="token function">mkdir</span> conf
+<span class="token builtin class-name">cd</span> conf
+<span class="token function">vim</span> my.cnf
+<span class="token comment">#以下为配置文件内容</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">[</span>client<span class="token punctuation">]</span>
+<span class="token assign-left variable">port</span><span class="token operator">=</span><span class="token number">3306</span>
+
+<span class="token punctuation">[</span>mysql<span class="token punctuation">]</span>
+default-character-set<span class="token operator">=</span>utf8
+
+<span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+<span class="token comment"># MySQL服务器将监听的TCP/IP端口</span>
+<span class="token assign-left variable">port</span><span class="token operator">=</span><span class="token number">3306</span>
+
+<span class="token comment"># 安装目录的路径。 通常相对于此解析所有路径。</span>
+<span class="token assign-left variable">basedir</span><span class="token operator">=</span>/usr/local/mysql-5.7
+
+<span class="token comment"># 数据库根目录的路径</span>
+<span class="token assign-left variable">datadir</span><span class="token operator">=</span>/usr/local/mysql-5.7/data
+
+<span class="token comment"># 创建新模式或表且未定义任何字符集时将使用的默认字符集</span>
+character-set-server<span class="token operator">=</span>utf8
+
+<span class="token comment"># 创建新表时将使用的默认存储引擎</span>
+default-storage-engine<span class="token operator">=</span>INNODB
+
+<span class="token comment"># MySQL服务器允许的最大并发会话数。</span>
+<span class="token comment"># 这些连接中的一个将保留给具有超级权限的用户，以允许管理员登录，即使已达到连接限制。</span>
+<span class="token assign-left variable">max_connections</span><span class="token operator">=</span><span class="token number">500</span>
+
+<span class="token comment"># soket文件，本地连接时使用</span>
+<span class="token assign-left variable">socket</span><span class="token operator">=</span>/usr/local/mysql-5.7/mysql.sock
+
+<span class="token comment"># 建议禁用符号链接以防止各种安全风险</span>
+symbolic-links<span class="token operator">=</span><span class="token number">0</span>
+
+<span class="token comment"># 错误日志</span>
+log-error<span class="token operator">=</span>/usr/local/mysql-5.7/logs/mysql_log.log
+
+<span class="token comment"># pid文件</span>
+pid-file<span class="token operator">=</span>/usr/local/mysql-5.7/mysqld.pid
+
+<span class="token comment"># 表名不区分大小写</span>
+<span class="token assign-left variable">lower_case_table_names</span><span class="token operator">=</span><span class="token number">1</span>
+
+<span class="token comment"># 设置sql_mode</span>
+<span class="token assign-left variable">sql_mode</span><span class="token operator">=</span>ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION<span class="token comment">## 用户组及初始化</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#添加mysql用户名</span>
+adduser mysql
+<span class="token comment">#给mysql账户设置密码</span>
+<span class="token function">passwd</span> mysql  
+<span class="token comment">#建工作组 </span>
+<span class="token function">groupadd</span> mysql
+<span class="token comment">#新建用户同时增加工作组</span>
+<span class="token function">useradd</span> <span class="token parameter variable">-g</span> mysql mysql <span class="token comment">#注：：-g 所属组 -d 目录 -s 所用的SHELL</span>
+<span class="token comment">#授权</span>
+<span class="token function">chown</span> <span class="token parameter variable">-R</span> mysql.mysql /usr/local/mysql-5.7 
+<span class="token comment">#初始化 </span>
+<span class="token comment">#切换目录</span>
+<span class="token builtin class-name">cd</span> /usr/local/mysql-5.7/bin
+<span class="token comment">#初始化配置</span>
+./mysqld --initialize-insecure <span class="token parameter variable">--user</span><span class="token operator">=</span>mysql <span class="token parameter variable">--basedir</span><span class="token operator">=</span>/usr/local/mysql-5.7 <span class="token parameter variable">--datadir</span><span class="token operator">=</span>/usr/local/mysql-5.7/data 
+<span class="token comment">#成功root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="设置开机启动"><a href="#设置开机启动" class="headerlink" title="设置开机启动"></a>设置开机启动</h4><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">vim</span> /usr/lib/systemd/system/mysql.service    <span class="token comment">#编辑服务文件</span>
+
+<span class="token punctuation">[</span>Unit<span class="token punctuation">]</span>
+<span class="token assign-left variable">Description</span><span class="token operator">=</span>MySQL Server <span class="token number">5.7</span>
+<span class="token assign-left variable">Documentation</span><span class="token operator">=</span>http://dev.mysql.com/doc/refman/en/using-systemd.html
+<span class="token assign-left variable">After</span><span class="token operator">=</span>network.target
+<span class="token assign-left variable">After</span><span class="token operator">=</span>syslog.target
+<span class="token punctuation">[</span>Install<span class="token punctuation">]</span>
+<span class="token assign-left variable">WantedBy</span><span class="token operator">=</span>multi-user.target
+<span class="token punctuation">[</span>Service<span class="token punctuation">]</span>
+<span class="token assign-left variable">User</span><span class="token operator">=</span>mysql
+<span class="token assign-left variable">Group</span><span class="token operator">=</span>mysql
+<span class="token assign-left variable">ExecStart</span><span class="token operator">=</span>/usr/local/mysql-5.7/bin/mysqld --defaults-file<span class="token operator">=</span>/usr/local/mysql-5.7/conf/my.cnf
+LimitNOFILE <span class="token operator">=</span> max_open_files
+
+
+<span class="token comment">#加入开机自启动</span>
+systemctl <span class="token builtin class-name">enable</span> mysql.service
+<span class="token comment">#服务的启动/停止/刷新配置文件/查看状态</span>
+<span class="token comment">#启动mysql服务</span>
+systemctl start mysql.service　 
+<span class="token comment">#停止服务</span>
+systemctl stop mysql.service　      
+
+ <span class="token comment">#重新启动服务</span>
+systemctl restart mysql.service　     
+
+<span class="token comment">#查看所有已启动的服务</span>
+systemctl list-units <span class="token parameter variable">--type</span><span class="token operator">=</span>service    
+<span class="token comment">#查看服务当前状态</span>
+systemctl status mysql.service         
+
+ <span class="token comment">#设置开机自启动</span>
+systemctl <span class="token builtin class-name">enable</span> mysql.service     
+
+ <span class="token comment"># 停止开机自启动</span>
+systemctl disable mysql.service  
+
+<span class="token comment">#启动时报错Failed to start mysql.service: Unit not found</span>
+<span class="token function">find</span> / <span class="token parameter variable">-name</span> mysql.server
+<span class="token function">cp</span> /usr/local/mysql-5.7/support-files/mysql.server /etc/init.d/mysql
+<span class="token comment">#查找basedir、datadir值，复制至/etc/init.d/mysql</span>
+<span class="token function">cat</span> /usr/local/mysql-5.7/conf/my.cnf
+<span class="token comment">#basedir=/usr/local/mysql-5.7</span>
+<span class="token comment">#datadir=/usr/local/mysql-5.7/data</span>
+
+<span class="token function">vim</span> /etc/init.d/mysql
+粘贴
+
+<span class="token function">service</span> mysql start<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="启动连接"><a href="#启动连接" class="headerlink" title="启动连接"></a>启动连接</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#启动mysql服务</span>
+systemctl start mysql.service 
+<span class="token comment">#连接mysql服务</span>
+<span class="token builtin class-name">cd</span> /usr/local/mysql-5.7/bin
+./mysql <span class="token parameter variable">-uroot</span> <span class="token parameter variable">-h</span> <span class="token number">127.0</span>.0.1 <span class="token parameter variable">-p</span>       
+
+<span class="token comment">#No database selected</span>
+use mysql
+show databases<span class="token punctuation">;</span>
+
+<span class="token comment">#设置密码</span>
+update user <span class="token builtin class-name">set</span> <span class="token assign-left variable">authentication_string</span><span class="token operator">=</span>PASSWORD<span class="token punctuation">(</span><span class="token string">"kingso616"</span><span class="token punctuation">)</span> where <span class="token assign-left variable">user</span><span class="token operator">=</span><span class="token string">'root'</span><span class="token punctuation">;</span>
+<span class="token comment">#刷新</span>
+flush privileges<span class="token punctuation">;</span>
+
+<span class="token comment">#设置允许远程登录</span>
+
+update user <span class="token builtin class-name">set</span> <span class="token assign-left variable">host</span><span class="token operator">=</span><span class="token string">'%'</span> where <span class="token assign-left variable">user</span><span class="token operator">=</span><span class="token string">'root'</span><span class="token punctuation">;</span>
+<span class="token comment">#刷新</span>
+flush privileges<span class="token punctuation">;</span>
+
+
+<span class="token comment">##创建</span>
+
+CREATE DATABASE 数据库名<span class="token punctuation">;</span>
+drop database 数据库名<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="继续修改WP的配置文件"><a href="#继续修改WP的配置文件" class="headerlink" title="继续修改WP的配置文件"></a>继续修改WP的配置文件</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">vim</span> /usr/share/nginx/html/wordpress/wp-config.php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">define<span class="token punctuation">(</span> <span class="token string">'DB_NAME'</span>, <span class="token string">'database_name_here'</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">#数据库</span>
+
+/** MySQL database username */
+define<span class="token punctuation">(</span> <span class="token string">'DB_USER'</span>, <span class="token string">'username_here'</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">#ROOT户名密码</span>
+
+/** MySQL database password */
+define<span class="token punctuation">(</span> <span class="token string">'DB_PASSWORD'</span>, <span class="token string">'password_here'</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">#ROOT户名密码</span>
+
+/** MySQL <span class="token function">hostname</span> */
+define<span class="token punctuation">(</span> <span class="token string">'DB_HOST'</span>, <span class="token string">'localhost'</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">#IP:端口，可以为内网DNS</span>
+
+/** Database Charset to use <span class="token keyword">in</span> creating database tables. */
+define<span class="token punctuation">(</span> <span class="token string">'DB_CHARSET'</span>, <span class="token string">'utf8'</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token comment">#此处加三行</span>
+define<span class="token punctuation">(</span><span class="token string">"FS_METHOD"</span>,<span class="token string">"direct"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+define<span class="token punctuation">(</span><span class="token string">"FS_CHMOD_DIR"</span>,0777<span class="token punctuation">)</span><span class="token punctuation">;</span>
+define<span class="token punctuation">(</span><span class="token string">"FS_CHMOD_FILE"</span>,0777<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+/** The Database Collate type. Don<span class="token string">'t change this if in doubt. */
+define( '</span>DB_COLLATE<span class="token string">', '</span>' <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+
+
+<span class="token comment">#重启php、nginx服务</span>
+systemctl restart nginx php-fpm
+
+网站带路径<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="REDIS的安装部署"><a href="#REDIS的安装部署" class="headerlink" title="REDIS的安装部署"></a>REDIS的安装部署</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> /usr/local/redis
+<span class="token builtin class-name">cd</span> 之
+yum <span class="token function">install</span> <span class="token function">wget</span>
+<span class="token function">wget</span> http://download.redis.io/redis-stable.tar.gz
+<span class="token function">tar</span> <span class="token parameter variable">-zxvf</span> redis-stable.tar.gz
+<span class="token function">make</span>     <span class="token comment">#极大概率报错，因无gcc gcc-c++等 install之执行 make clean 后再次 执行 make ，再检查redis-x.x.x/src 目录下有没有 redis-server、redis-cli 和 /usr/local/bin下有没有</span>
+<span class="token comment">#若无，则把redis-x.x.x 文件夹删掉，再解压一次redis的压缩包，cd进入 redis-x.x.x 中， make 一下 即可</span>
+<span class="token comment">#也可能因无python3而报错</span>
+<span class="token comment">#You need tcl 8.5 or newer in order to run the Redis test</span>
+<span class="token function">wget</span> https://sourceforge.net/projects/tcl/files/Tcl/8.6.13/tcl8.6.13-src.tar.gz
+<span class="token function">tar</span> <span class="token parameter variable">-zxvf</span> tc_tab
+<span class="token builtin class-name">cd</span>  /usr/local/tc_tab/unix/ 
+./configure
+<span class="token function">make</span>
+<span class="token function">make</span> <span class="token function">install</span> 
+
+以上多半会因为gcc版本过低而无法完成test，尝试用以下方式解决
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> centos-release-scl
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> devtoolset-9-gcc devtoolset-9-gcc-c++ devtoolset-9-binutils
+scl <span class="token builtin class-name">enable</span> devtoolset-9 <span class="token function">bash</span>
+
+<span class="token function">make</span> distclean 
+
+<span class="token function">make</span> <span class="token function">install</span>  
+
+
+
+<span class="token comment"># redis配置文件</span>
+<span class="token function">cat</span> redis.conf.bak <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-v</span> <span class="token string">"#"</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-v</span> <span class="token string">"^$"</span> <span class="token operator">></span> redis.conf
+daemonize <span class="token comment">#由 no 改成 yes，表示允许 Redis 在后台启动</span>
+ <span class="token builtin class-name">bind</span> <span class="token number">127.0</span>.0.1 前面添加 <span class="token comment"># 将其注释掉，默认情况下只允许本地连接，注释掉后外网就可以连接 Redis 了</span>
+修改 requirepass 配置，该配置表示登录该 Redis 实例所需的密码
+由于上面我们配置了密码登录，这里将 protected-mode 设置为 no 关闭保护模式
+
+
+redis-server    <span class="token comment">#默认配置启动 </span>
+redis-server conf/redis-6379.conf   <span class="token comment"># 指定配置文件启动 </span>
+
+
+
+
+
+<span class="token comment">#以前不好用，大概率起不来，用epel   yum 装</span>
+
+yum <span class="token parameter variable">-y</span> <span class="token function">install</span> epel-release
+
+<span class="token comment">#更新yum源</span>
+yum <span class="token parameter variable">-y</span> update
+
+systemctl start redis
+systemctl status redis
+systemctl stop redis 停止服务
+<span class="token function">ps</span> <span class="token parameter variable">-ef</span> <span class="token operator">|</span> <span class="token function">grep</span> redis 查看reids服务信息
+systemctl <span class="token builtin class-name">enable</span> redis redis开机启动        
+
+<span class="token function">vim</span> /etc/redis.conf
+注释 <span class="token comment">#bind 127.0.0.1</span>
+修改 protected-mode no
+修改 daemonize <span class="token function">yes</span>
+增加 requirepass password
+
+
+
+systemctl restart redis
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="WP设置redis插件"><a href="#WP设置redis插件" class="headerlink" title="WP设置redis插件"></a>WP设置redis插件</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#wp先安装插件</span>
+执行php -m<span class="token operator">|</span><span class="token function">grep</span> redis，如返回redis则继续，否则，执行yum <span class="token parameter variable">-y</span> <span class="token function">install</span> php-redis
+
+<span class="token function">vim</span> /etc/php.ini  在任意位置增加 <span class="token assign-left variable">extension</span><span class="token operator">=</span>redis
+
+<span class="token function">vim</span> /usr/share/nginx/html/wordpress/wp-config.php
+第二段
+define<span class="token punctuation">(</span><span class="token string">"WP_REDIS_HOST"</span>,<span class="token string">'10.16.16.136'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+define<span class="token punctuation">(</span><span class="token string">"WP_REDIS_PORT"</span>,<span class="token string">'6379'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+define<span class="token punctuation">(</span><span class="token string">"WP_REDIS_PASSWORD"</span>,<span class="token string">'kingso616'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">umikingso</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://umikingso.github.io/2023/09/08/ji-yu-centos7-yuan-sheng-bu-shu-ng-php-wp/">https://umikingso.github.io/2023/09/08/ji-yu-centos7-yuan-sheng-bu-shu-ng-php-wp/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">umikingso</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/linux/">
+                                    <span class="chip bg-color">linux</span>
+                                </a>
+                            
+                                <a href="/tags/wp/">
+                                    <span class="chip bg-color">wp</span>
+                                </a>
+                            
+                                <a href="/tags/nginx/">
+                                    <span class="chip bg-color">nginx</span>
+                                </a>
+                            
+                                <a href="/tags/php/">
+                                    <span class="chip bg-color">php</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2023/09/08/ji-yu-centos7-yuan-sheng-bu-shu-ng-php-wp/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="基于CentOS7原生部署ng-php-wp">
+                        
+                        <span class="card-title">基于CentOS7原生部署ng-php-wp</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-09-08
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/linux/" class="post-category">
+                                    linux
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/linux/">
+                        <span class="chip bg-color">linux</span>
+                    </a>
+                    
+                    <a href="/tags/wp/">
+                        <span class="chip bg-color">wp</span>
+                    </a>
+                    
+                    <a href="/tags/nginx/">
+                        <span class="chip bg-color">nginx</span>
+                    </a>
+                    
+                    <a href="/tags/php/">
+                        <span class="chip bg-color">php</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2023/08/04/windows-zhu-ji-ying-pan-ce-lue-tuo-ji/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="windows主机硬盘策略脱机">
+                        
+                        <span class="card-title">windows主机硬盘策略脱机</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/windows/" class="post-category">
+                                    windows
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/windows/">
+                        <span class="chip bg-color">windows</span>
+                    </a>
+                    
+                    <a href="/tags/disk/">
+                        <span class="chip bg-color">disk</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2010-2023</span>
+            
+            <a href="/about" target="_blank">umikingso</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+                <span id="icp"><img src="/medias/icp.png"
+                                    style="vertical-align: text-bottom;"/>
+                <a href="/null" target="_blank">网站违法和不良信息举报电话13372688135,举报邮箱umikingso@163.com</a>
+            </span>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/umikingso" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:umikingso@gmail.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/snow.js"><\/script>');
+            }
+        </script>
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
